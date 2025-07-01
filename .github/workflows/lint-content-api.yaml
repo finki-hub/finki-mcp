@@ -1,0 +1,48 @@
+name: Linters (Local MCP)
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'local-mcp/**'
+      - '.github/workflows/lint-local-mcp.yaml'
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - 'local-mcp/**'
+      - '.github/workflows/lint-local-mcp.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  linters:
+    name: Ruff & MyPy (Local MCP)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install Dependencies
+        run: |
+          cd local-mcp
+          uv sync
+
+      - name: Run Ruff
+        run: |
+          cd local-mcp
+          uv run --active ruff check .
+
+      - name: Run MyPy
+        run: |
+          cd local-mcp
+          uv run --active mypy .
