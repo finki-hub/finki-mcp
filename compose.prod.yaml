@@ -1,0 +1,17 @@
+name: finki-mcp
+
+services:
+  local-mcp:
+    image: ghcr.io/finki-hub/finki-local-mcp:latest
+    ports:
+      - '8808:8808'
+    networks:
+      - finki_stack
+    restart: unless-stopped
+
+networks:
+  finki_stack:
+    name: finki_stack
+    driver: bridge
+    # Set external to true to use an existing network
+    # external: true

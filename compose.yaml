@@ -1,0 +1,19 @@
+name: finki-mcp-dev
+
+services:
+  local-mcp:
+    build:
+      context: ./local-mcp
+      dockerfile: Dockerfile
+    ports:
+      - '8808:8808'
+    networks:
+      - finki_stack_dev
+    restart: unless-stopped
+
+networks:
+  finki_stack_dev:
+    name: finki_stack_dev
+    driver: bridge
+    # Set external to true to use an existing network
+    # external: true
