@@ -1,11 +1,17 @@
 from mcp.server.fastmcp import FastMCP
-from mcp.types import TextContent, ToolAnnotations
+from mcp.types import ToolAnnotations
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
 
-from tools.consultations import get_consultations_for_staff
-from tools.staff import get_staff
-from utils.settings import Settings
+from app.schemas.staff import StaffData
+from app.tools.course_staff import (
+    get_available_courses_for_staff,
+    get_staff_for_course,
+)
+from app.utils.query_matcher import (
+    match_query_to_candidates,
+)
+from app.utils.settings import Settings
 
 settings = Settings()
 
@@ -24,42 +30,57 @@ def make_app(settings: Settings) -> FastMCP:
         return PlainTextResponse("OK")
 
     @mcp.tool(
-        name="get_staff",
-        description="Преземи листа од наставниот кадар на ФИНКИ",
+        name="get_available_courses_with_staff_data",
+        description="Get a list of available courses for staff.",
         annotations=ToolAnnotations(
-            title="Преземи наставен кадар",
-            readOnlyHint=True,
+            title="Get Available Courses for Staff",
             destructiveHint=False,
             idempotentHint=True,
-            openWorldHint=False,
+            openWorldHint=True,
+            readOnlyHint=True,
         ),
     )
-    async def get_staff_tool() -> list[TextContent]:
-        result = await get_staff()
+    async def get_courses_with_staff_data() -> list[str]:
+        result = get_available_courses_for_staff()
 
-        if isinstance(result, str):
-            return [TextContent(type="text", text=result)]
-
-        return [TextContent(type="text", text=name) for name in result]
+        return result
 
     @mcp.tool(
-        name="get_consultations_for_staff",
-        description="Преземи закажани термини за консултации за член на наставниот кадар на ФИНКИ",
+        name="get_staff_data_for_course",
+        description="Get staff data for a specific course.",
         annotations=ToolAnnotations(
-            title="Преземи термини за консултации",
-            readOnlyHint=True,
+            title="Get Staff Data for Course",
             destructiveHint=False,
             idempotentHint=True,
-            openWorldHint=False,
+            openWorldHint=True,
+            readOnlyHint=True,
         ),
     )
-    async def get_consultations_for_staff_tool(staff_name: str) -> list[TextContent]:
-        result = await get_consultations_for_staff(staff_name)
+    async def get_staff_data_for_course(course_name: str) -> StaffData:
+        course_names = get_available_courses_for_staff()
+        result = match_query_to_candidates(course_name, course_names)
+        if result["match"]:
+            staff_data = get_staff_for_course(result["match"])
+            staff_data["match_info"] = {
+                "original_query": course_name,
+                "matched_course": result["match"],
+                "similarity_score": result["score"],
+                "match_type": result["match_type"],
+            }
+            return StaffData(**staff_data)
 
-        if isinstance(result, str):
-            return [TextContent(type="text", text=result)]
+        suggestions = result.get("suggestions")
+        if not isinstance(suggestions, list):
+            suggestions = None
 
-        return [TextContent(type="text", text=consultation) for consultation in result]
+        return StaffData(
+            course=course_name,
+            professors=[],
+            assistants=[],
+            error=f"Course '{course_name}' not found",
+            suggestions=suggestions,
+            match_info=None,
+        )
 
     return mcp
 
