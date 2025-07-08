@@ -3,7 +3,12 @@ from mcp.types import ToolAnnotations
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
 
-from app.schemas.staff import StaffData
+from app.schemas.course_participants import ParticipantsData
+from app.schemas.course_staff import StaffData
+from app.tools.course_participants import (
+    get_available_courses_for_participants,
+    get_participants_for_course,
+)
 from app.tools.course_staff import (
     get_available_courses_for_staff,
     get_staff_for_course,
@@ -40,7 +45,7 @@ def make_app(settings: Settings) -> FastMCP:
             readOnlyHint=True,
         ),
     )
-    async def get_courses_with_staff_data() -> list[str]:
+    async def get_available_courses_with_staff_data_tool() -> list[str]:
         result = get_available_courses_for_staff()
 
         return result
@@ -56,7 +61,7 @@ def make_app(settings: Settings) -> FastMCP:
             readOnlyHint=True,
         ),
     )
-    async def get_staff_data_for_course(course_name: str) -> StaffData:
+    async def get_staff_data_for_course_tool(course_name: str) -> StaffData:
         course_names = get_available_courses_for_staff()
         result = match_query_to_candidates(course_name, course_names)
         if result["match"]:
@@ -77,6 +82,60 @@ def make_app(settings: Settings) -> FastMCP:
             course=course_name,
             professors=[],
             assistants=[],
+            error=f"Course '{course_name}' not found",
+            suggestions=suggestions,
+            match_info=None,
+        )
+
+    @mcp.tool(
+        name="get_available_courses_for_participants",
+        description="Get a list of available courses for participants.",
+        annotations=ToolAnnotations(
+            title="Get Available Courses for Participants",
+            destructiveHint=False,
+            idempotentHint=True,
+            openWorldHint=True,
+            readOnlyHint=True,
+        ),
+    )
+    async def get_available_courses_for_participants_tool() -> list[str]:
+        result = get_available_courses_for_participants()
+
+        return result
+
+    @mcp.tool(
+        name="get_participants_for_course",
+        description="Get participant counts for a specific course, with robust matching.",
+        annotations=ToolAnnotations(
+            title="Get Participants for Course",
+            destructiveHint=False,
+            idempotentHint=True,
+            openWorldHint=True,
+            readOnlyHint=True,
+        ),
+    )
+    async def get_participants_for_course_tool(course_name: str) -> ParticipantsData:
+        course_names = get_available_courses_for_participants()
+        result = match_query_to_candidates(course_name, course_names)
+        suggestions = (
+            result["suggestions"] if isinstance(result["suggestions"], list) else []
+        )
+
+        if result["match"]:
+            participants_data = get_participants_for_course(result["match"])
+            participants_data["match_info"] = {
+                "original_query": course_name,
+                "matched_course": result["match"],
+                "similarity_score": result["score"],
+                "match_type": result["match_type"],
+            }
+            participants_data.setdefault("error", None)
+            participants_data.setdefault("suggestions", suggestions)
+
+            return ParticipantsData(**participants_data)
+
+        return ParticipantsData(
+            course=course_name,
             error=f"Course '{course_name}' not found",
             suggestions=suggestions,
             match_info=None,
