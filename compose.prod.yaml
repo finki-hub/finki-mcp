@@ -8,6 +8,8 @@ services:
     networks:
       - finki_stack
     restart: unless-stopped
+    volumes:
+      - ./data:/data
 
 networks:
   finki_stack:
