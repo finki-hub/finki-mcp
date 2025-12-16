@@ -23,9 +23,6 @@ settings = Settings()
 
 def make_app(settings: Settings) -> FastMCP:
     mcp = FastMCP(
-        title=settings.APP_TITLE,
-        description=settings.APP_DESCRIPTION,
-        version=settings.API_VERSION,
         port=settings.PORT,
         host=settings.HOST,
     )
