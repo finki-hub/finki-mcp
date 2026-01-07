@@ -1,0 +1,3 @@
+[submodule "finki-public-apis"]
+	path = public-mcp
+	url = https://gitlab.finki.ukim.mk/wp/finki-public-apis
