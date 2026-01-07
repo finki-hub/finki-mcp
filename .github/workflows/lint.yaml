@@ -1,48 +1,24 @@
-name: Linters (Local MCP)
+name: Linter
 
 on:
   push:
-    branches:
-      - 'main'
-    paths:
-      - 'local-mcp/**'
-      - '.github/workflows/lint-local-mcp.yaml'
+    branches: [main, dev]
   pull_request:
-    branches:
-      - 'main'
-    paths:
-      - 'local-mcp/**'
-      - '.github/workflows/lint-local-mcp.yaml'
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  linters:
-    name: Ruff & MyPy (Local MCP)
-    runs-on: ubuntu-latest
+  ruff:
+    uses: finki-hub/.github/.github/workflows/ruff.yaml@main
+    with:
+      working-directory: './local-mcp'
+    secrets: inherit
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-
-      - name: Set up Python
-        run: uv python install
-
-      - name: Install Dependencies
-        run: |
-          cd local-mcp
-          uv sync
-
-      - name: Run Ruff
-        run: |
-          cd local-mcp
-          uv run --active ruff check .
-
-      - name: Run MyPy
-        run: |
-          cd local-mcp
-          uv run --active mypy .
+  mypy:
+    uses: finki-hub/.github/.github/workflows/mypy.yaml@main
+    with:
+      working-directory: './local-mcp'
+    secrets: inherit
