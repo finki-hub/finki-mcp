@@ -1,4 +1,4 @@
-name: Docker
+name: Docker (Public MCP)
 
 on:
   push:
@@ -12,6 +12,7 @@ jobs:
   docker:
     uses: finki-hub/.github/.github/workflows/docker.yaml@main
     with:
-      dockerfile: "./local-mcp/Dockerfile"
-      context: "./local-mcp"
+      dockerfile: ./public-mcp/Dockerfile
+      context: ./public-mcp
+      package-name: finki-mcp-public
     secrets: inherit

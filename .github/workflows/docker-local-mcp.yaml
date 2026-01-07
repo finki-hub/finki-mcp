@@ -1,0 +1,18 @@
+name: Docker (Local MCP)
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker:
+    uses: finki-hub/.github/.github/workflows/docker.yaml@main
+    with:
+      dockerfile: ./local-mcp/Dockerfile
+      context: ./local-mcp
+      package-name: finki-mcp-local
+    secrets: inherit
