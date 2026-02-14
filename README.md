@@ -39,12 +39,6 @@ Server runs on `http://localhost:8808`
 - Get course staff/participants information
 - Fuzzy query matching support
 
-## Development
-
-- **Language**: Python 3.13+
-- **Type checking**: `mypy`
-- **Linting**: `ruff`
-
 ## License
 
-See [LICENSE](LICENSE) file.
+This project is licensed under the terms of the MIT license.
