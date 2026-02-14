@@ -6,8 +6,8 @@ class Settings(BaseSettings):
     Application settings.
     """
 
-    APP_TITLE: str = "FINKI Chat Bot Local MCP"
-    APP_DESCRIPTION: str = "API for FINKI Chat Bot, providing external context via MCP."
+    APP_TITLE: str = "MCP"
+    APP_DESCRIPTION: str = "API providing external context via MCP"
     API_VERSION: str = "1.0.0"
 
     HOST: str = "0.0.0.0"  # noqa: S104

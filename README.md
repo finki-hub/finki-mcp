@@ -1,6 +1,6 @@
-# finki-mcp
+# FINKI HUB / MCP
 
-Model Context Protocol (MCP) servers for FINKI course management and public APIs.
+Model Context Protocol (MCP) servers for FCSE course management and public APIs.
 
 ## Structure
 
@@ -13,24 +13,22 @@ Model Context Protocol (MCP) servers for FINKI course management and public APIs
 ### Clone with submodules
 
 ```bash
-git clone --recurse-submodules https://github.com/finki-hub/finki-mcp.git
-cd finki-mcp
+git clone --recurse-submodules https://github.com/finki-hub/mcp.git
+cd mcp
 ```
 
 ### Local development
 
 ```bash
 cd local-mcp
-python -m venv .venv
-.venv\Scripts\activate  # Windows
-pip install -e .
-python -m app.main
+uv sync
+uv run python -m app.main
 ```
 
 ### Docker
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 Server runs on `http://localhost:8808`

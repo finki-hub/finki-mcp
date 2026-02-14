@@ -14,5 +14,5 @@ jobs:
     with:
       dockerfile: ./local-mcp/Dockerfile
       context: ./local-mcp
-      package-name: finki-mcp-local
+      package-name: mcp-local
     secrets: inherit

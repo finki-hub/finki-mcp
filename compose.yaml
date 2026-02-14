@@ -1,4 +1,4 @@
-name: finki-mcp-dev
+name: finki-hub-mcp-dev
 
 services:
   local-mcp:

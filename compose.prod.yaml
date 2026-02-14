@@ -1,8 +1,8 @@
-name: finki-mcp
+name: finki-hub-mcp
 
 services:
   local-mcp:
-    image: ghcr.io/finki-hub/finki-local-mcp:latest
+    image: ghcr.io/finki-hub/mcp-local:latest
     ports:
       - '8808:8808'
     networks:

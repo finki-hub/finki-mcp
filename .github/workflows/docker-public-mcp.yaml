@@ -14,6 +14,6 @@ jobs:
     with:
       dockerfile: ./public-mcp/Dockerfile
       context: ./public-mcp
-      package-name: finki-mcp-public
+      package-name: mcp-public
       submodules: true
     secrets: inherit
