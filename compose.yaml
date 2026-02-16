@@ -15,7 +15,7 @@ services:
     networks:
       - finki_stack_dev
     ports:
-      - '8808:8808'
+      - "8808:8808"
     pull_policy: never
     restart: unless-stopped
     volumes:
