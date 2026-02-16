@@ -1,19 +1,19 @@
 name: finki-hub-mcp
 
+networks:
+  finki_stack:
+    driver: bridge
+    name: finki_stack
+    # Set external to true to use an existing network
+    # external: true
+
 services:
   local-mcp:
     image: ghcr.io/finki-hub/mcp-local:latest
-    ports:
-      - '8808:8808'
     networks:
       - finki_stack
+    ports:
+      - '8808:8808'
     restart: unless-stopped
     volumes:
       - ./data:/data
-
-networks:
-  finki_stack:
-    name: finki_stack
-    driver: bridge
-    # Set external to true to use an existing network
-    # external: true
