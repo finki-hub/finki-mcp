@@ -51,7 +51,8 @@ def match_query_to_candidates(
         scorer=fuzz.WRatio,
     )
     suggestions = []
-    for _, score, idx in all_matches:
+    for match_text, score in all_matches:
+        idx = norm_candidates.index(match_text)
         if score >= suggestion_threshold and idx != best_index:
             suggestions.append(candidates[idx])
         if len(suggestions) >= max_suggestions:
