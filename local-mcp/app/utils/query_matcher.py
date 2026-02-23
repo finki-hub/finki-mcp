@@ -1,5 +1,15 @@
+from typing import TypedDict
+
 import cyrtranslit  # type: ignore[import-untyped]
 from thefuzz import fuzz, process  # type: ignore[import-untyped]
+
+
+class MatchResult(TypedDict):
+    match: str | None
+    score: int | float
+    exact: bool
+    suggestions: list[str]
+    match_type: str
 
 
 def transliterate_and_normalize(text: str) -> str:
@@ -15,7 +25,7 @@ def match_query_to_candidates(
     fuzzy_threshold: int = 80,
     suggestion_threshold: int = 50,
     max_suggestions: int = 3,
-) -> dict[str, object]:
+) -> MatchResult:
     norm_query = transliterate_and_normalize(query)
     norm_candidates = [transliterate_and_normalize(c) for c in candidates]
     for i, norm_cand in enumerate(norm_candidates):

@@ -12,3 +12,5 @@ class Settings(BaseSettings):
 
     HOST: str = "0.0.0.0"  # noqa: S104
     PORT: int = 8808
+
+    DATA_STORAGE_URL: str = "https://assets.finki-hub.com"

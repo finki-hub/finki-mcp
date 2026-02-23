@@ -9,11 +9,11 @@ networks:
 
 services:
   local-mcp:
+    environment:
+      DATA_STORAGE_URL: ${DATA_STORAGE_URL}
     image: ghcr.io/finki-hub/mcp-local:latest
     networks:
       - finki_stack
     ports:
-      - '8808:8808'
+      - "8808:8808"
     restart: unless-stopped
-    volumes:
-      - ./data:/data
