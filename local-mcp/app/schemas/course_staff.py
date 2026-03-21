@@ -25,15 +25,15 @@ class StaffData(BaseModel):
     suggestions: list[str] | None = Field(
         None,
         description="List of suggested course names if no exact match is found",
-        examples=[["Структурно програмирање", "Програмирање 1"]],
+        examples=[["Алгоритми и податочни структури", "Бази на податоци"]],
     )
     match_info: dict | None = Field(
         None,
         description="Metadata about the matching process, including original query, matched course, similarity score, and match type",
         examples=[
             {
-                "original_query": "структурно програмирање",
-                "matched_course": "Структурно програмирање",
+                "original_query": "веб програмирање",
+                "matched_course": "Веб програмирање",
                 "similarity_score": 95,
                 "match_type": "fuzzy",
             },
